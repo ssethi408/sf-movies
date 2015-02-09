@@ -2,8 +2,9 @@
 import sqlite3
 import json
 import urllib
+import httplib
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
+     abort, render_template, flash, jsonify
 from contextlib import closing
 
 # configuration
@@ -21,6 +22,7 @@ app.config.from_object(__name__)
 # the silent switch just tells Flask to not complain if no such environment key is set.
 app.config.from_envvar('SFMOVIES_SETTINGS', silent=True)
 
+# DB Connection, initiatialization and querying functions
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
@@ -54,20 +56,29 @@ def teardown_request(exception):
 
 @app.route('/')
 def welcome():
-    return 'Welcome to SF-Movies Project!'
+    return render_template('welcome.html')
 
-@app.route('/movie-name/<path:movie>')
+#Return a list of movies based on what's being searched for Autocomplete
+@app.route('/_movie-name')
+def xhr_movie_name():
+    movie_request = request.args.get('movie', 0)
+    entries = [dict(value=title[0]) for title in query_db("select distinct(title) from films where title like '%s%%'" % movie_request)]
+    return json.dumps(entries)
+    
+#Return a list of movies based on what's being searched
+@app.route('/db-movie-name/<path:movie>')
 def movie_name(movie):
     decoded_movie = urllib.unquote(movie)
-    entries = [dict(locations=title[3]) for title in query_db("select * from films where title = '%s'" % decoded_movie)]
-        ##list_of_locations += title[1], 'has the location', title[3]
-
+    #entries = [dict(label=movie, value=title[0]) for title in query_db("select distinct(title) from films where title like '%s%%'" % decoded_movie)]
+    entries = [dict(movies=title[0]) for title in query_db("select distinct(title) from films where title like '%s%%'" % decoded_movie)]
     return json.dumps(entries)
-    #####
-    #cur = g.db.execute('select * from films where title = %s' % movie)
-    #entries = [dict(title=row[0], text=row[1], text1=row[2], text2=row[3]) for row in cur.fetchall()]
-    #return render_template('show_entries.html', entries=entries)
-    #####
+
+#Return a list of locations for the movie searched
+@app.route('/locations/<path:movie>')
+def locations(movie):
+    decoded_movie = urllib.unquote(movie)
+    entries = [dict(locations=title[3]) for title in query_db("select * from films where title = '%s'" % decoded_movie)]
+    return json.dumps(entries)
 
 @app.route('/movie-name-api/<movie>')
 def movie_name_api(movie):
