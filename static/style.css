@@ -1,18 +1,96 @@
-body            { font-family: sans-serif; background: #eee; }
-a, h1, h2       { color: #377ba8; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 2px solid #eee; }
-h2              { font-size: 1.2em; }
+/*******************************
+            Button
+*******************************/
 
-.page           { margin: 2em auto; width: 35em; border: 5px solid #ccc;
-                  padding: 0.8em; background: white; }
-.entries        { list-style: none; margin: 0; padding: 0; }
-.entries li     { margin: 0.8em 1.2em; }
-.entries li h2  { margin-left: -1em; }
-.add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
-.add-entry dl   { font-weight: bold; }
-.metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
-                  margin-bottom: 1em; background: #fafafa; }
-.flash          { background: #cee5F5; padding: 0.5em;
-                  border: 1px solid #aacbe2; }
-.error          { background: #f0d6d6; padding: 0.5em; }
+/*-------------------
+       Element
+--------------------*/
+
+/* Shadow */
+@shadowDistance: 0em;
+@shadowOffset: (@shadowDistance / 2);
+@shadowBoxShadow: 0px -@shadowDistance 0px 0px @borderColor inset;
+@backgroundColor: #FAFAFA;
+@backgroundImage: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.09));
+@boxShadow:
+  0px 0px 0px 1px @borderColor inset,
+  @shadowBoxShadow
+;
+
+/* Padding */
+@verticalPadding: 0.8em;
+@horizontalPadding: 1.5em;
+
+
+/*-------------------
+        Group
+--------------------*/
+
+@groupBoxShadow: none;
+@groupButtonBoxShadow:
+  0px 0px 0px 1px @borderColor inset,
+  @shadowBoxShadow
+;
+@verticalBoxShadow: 0px 0px 0px 1px @borderColor inset;
+@groupButtonOffset: 0px 0px 0px -1px;
+@verticalGroupOffset: 0px 0px -1px 0px;
+
+/*-------------------
+        States
+--------------------*/
+
+/* Hovered */
+@hoverBackgroundColor: '';
+@hoverBackgroundImage: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.13));
+@hoverBoxShadow: '';
+@hoverColor: @hoveredTextColor;
+@iconHoverOpacity: 0.85;
+
+/* Focused */
+@focusBackgroundColor: '';
+@focusBackgroundImage: '';
+@focusBoxShadow:
+  0px 0px 1px rgba(81, 167, 232, 0.8) inset,
+  0px 0px 3px 2px rgba(81, 167, 232, 0.8)
+;
+@focusColor: @hoveredTextColor;
+@iconFocusOpacity: 0.85;
+
+/* Pressed Down */
+@downBackgroundColor: #F1F1F1;
+@downBackgroundImage: '';
+@downBoxShadow:
+  0px 0px 0px 1px rgba(0, 0, 0, 0.1) inset,
+  0px 1px 4px 0px rgba(0, 0, 0, 0.1) inset !important
+;
+@downColor: @pressedTextColor;
+
+/* Active */
+@activeBackgroundColor: #DADADA;
+@activeBackgroundImage: none;
+@activeColor: @selectedTextColor;
+@activeBoxShadow:
+  0px 0px 0px 1px rgba(0, 0, 0, 0.1) inset,
+  0px 1px 4px 0px rgba(0, 0, 0, 0.1) inset !important
+;
+
+/* Active + Hovered */
+@activeHoverBackgroundColor: #DADADA;
+@activeHoverBackgroundImage: none;
+@activeHoverBoxShadow:
+  0px 0px 0px 1px rgba(0, 0, 0, 0.1) inset,
+  0px 1px 4px 0px rgba(0, 0, 0, 0.1) inset !important
+;
+@activeHoverColor: @selectedTextColor;
+
+/* Loading */
+@loadingBackgroundColor: #FFFFFF;
+
+/*-------------------
+        Types
+--------------------*/
+
+/* Labeled Icon */
+@labeledIconBackgroundColor: rgba(0, 0, 0, 0.05);
+@labeledIconLeftShadow: -1px 0px 0px 0px @labeledIconBorder inset;
+@labeledIconRightShadow: 1px 0px 0px 0px @labeledIconBorder inset;
