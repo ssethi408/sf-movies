@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block body %}
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 5;}
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAc41h_kWWYnyE3Oz8U2ZeHEoxxsUyh8AY">
+    </script>
+<!--
+    <script type="text/javascript">
+        $(function () {
+          $("#address").autocomplete({
+            source: function (request, response) {
+              var param = { movie: $('#address').val() };
+              $.ajax({
+                url: "_movie-name",
+                data: param,
+                dataType: "json",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataFilter: function (data) { return data; },
+                success: function (data) {
+                  alert(data);
+                  response($.map(data.d, function (item) {
+                    return {
+                      value: item
+                    }
+                  }))
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                  alert(textStatus);
+                }
+             });
+           },
+           minLength: 2 //minLength as 2, it means when ever user enter 2 character in TextBox the AutoComplete method will fire and get its source data. 
+         });
+       });
+    </script>
+-->
+<script type=text/javascript>
+  $(function() {
+    $('input#address').bind('keyup', function() {
+      $.getJSON($SCRIPT_ROOT + '/_movie-name', {
+        movie: $('input[name="movie"]').val()
+      }, function(data) {
+        var items = [];
+        $.each( data, function( key, val ) {
+          items.push("<li>" + val + "</li>");
+        }
+        $( "<ul/>", { html: items.join("")}).appendTo("body");
+        alert(data);
+      });
+      return false;
+    });
+  });
+</script>
+<!-- Google Maps API
+    <script type="text/javascript">
+        var geocoder;
+        var map;
+        function initialize() {
+          geocoder = new google.maps.Geocoder();
+          var latlng = new google.maps.LatLng(-34.397, 150.644);
+          var mapOptions = {
+            zoom: 8,
+            center: latlng
+          }
+          map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        }
+
+        function codeAddress() {
+          var address = document.getElementById('address').value;
+          geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              map.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+              });
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+        }
+    
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+-->
+    <input type="text" id="address" name="movie"></input>
+    <input type="button" id="auto" value="Search" onclick="codeAddress()"></input>
+    <span id="result">?</span>
+    <div id="map-canvas"></div>
+{% endblock %}
