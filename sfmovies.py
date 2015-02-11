@@ -62,7 +62,7 @@ def welcome():
 @app.route('/_movie-name')
 def xhr_movie_name():
     movie_request = request.args.get('movie', 0)
-    entries = [dict(value=title[0]) for title in query_db("select distinct(title) from films where title like '%s%%'" % movie_request)]
+    entries = [dict(value=title[0], link=url_for('locations', movie=title[0])) for title in query_db("select distinct(title) from films where title like '%s%%'" % movie_request)]
     return json.dumps(entries)
     
 #Return a list of movies based on what's being searched
