@@ -7,6 +7,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAc41h_kWWYnyE3Oz8U2ZeHEoxxsUyh8AY">
     </script>
 <script type=text/javascript>
+  //Function set for binding the "onkeyup" event on the text input to send an AJAX request to retrive a JSON object which will create a unordered list and store it in a DIV
   $(function() {
     $('input#address').bind('keyup', function() {
       $.getJSON($SCRIPT_ROOT + '/_movie-name', {
@@ -26,6 +27,7 @@
   });
 </script>
     <script type="text/javascript">
+    //This functionality is from Google Maps API.
         var geocoder;
         var map;
 	var markers = [];
@@ -39,28 +41,34 @@
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
         }
 
+        //This functionality will allow us to take the information retrieved from the back-end FLASK call to pull locations that were in the sfgov API for where movies were filmed in San Francisco.
         function codeMovie(myLink, movie_name) {
           $('ul').remove();
           $('div#resultDiv').attr( 'style', 'display:none' );
           //alert(movie_name);
-          $('input#address').val = movie_name; 
+          $('input#address').val(movie_name); 
           $.getJSON( myLink, function (data) {
             $.each(data, function(i, item) {
-              codeAddress(data[i].locations);
+              codeAddress(data[i].locations, movie_name);
             });
           });
         }
 
-        function codeAddress(address) {
+	//Helper function to draw markers on the map and geocode the text from the API for locations.
+        function codeAddress(address, movie) {
           //alert("Returned the following address: " + address);
           //setAllMap(null);
           markers = [];
+	  //Some Addresses aren't specific enough for being close to San Francisco.
+          // TODO: verify/confirm that all the addresses coming in from the API are geolocated and confirmed locations. 
+          // TODO: if the locations coming back are a "range" of a street - need to draw a line on the map instead of a marker.
           if (address == "") {
           geocoder.geocode( { 'address': address + ' near San Francisco, CA'}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
               map.setCenter(results[0].geometry.location);
 	      var infowindow = new google.maps.InfoWindow({
-                content: address
+                content: "Movie: <b>" + movie + "</b><br/><br/>" + address,
+                maxwidth: 200
               });
               var marker = new google.maps.Marker({
                   map: map,
@@ -79,7 +87,8 @@
             if (status == google.maps.GeocoderStatus.OK) {
               map.setCenter(results[0].geometry.location);
 	      var infowindow = new google.maps.InfoWindow({
-                content: address
+                content: "Movie: <b>" + movie + "</b><br/><br/>" + address,
+                maxwidth: 200
               });
               var marker = new google.maps.Marker({
                   map: map,
@@ -101,7 +110,9 @@
     </script>
     <input type="text" id="address" name="movie"></input>
     <input type="button" id="auto" value="Search" onclick="codeAddress()"></input>
-    <div id="resultDiv" style="display:none">
+    <div id="resultDiv" style="position:relative; top: -22px; 
+         left: 85px; width: 200; display: none; 
+         background-color: white; border: 1px solid black;">
     </div>
     <div id="map-canvas"></div>
 {% endblock %}
